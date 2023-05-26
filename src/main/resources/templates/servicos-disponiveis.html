@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Serviços Disponíveis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="email"] {
+            padding: 8px;
+            width: 250px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+    <script>
+        function uncheckOtherCheckboxes(currentCheckbox) {
+            var checkboxes = document.getElementsByName("servicoId");
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] !== currentCheckbox) {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+
+        function validateForm() {
+            var checkboxes = document.getElementsByName("servicoId");
+            var isChecked = false;
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    isChecked = true;
+                    break;
+                }
+            }
+            if (!isChecked) {
+                var errorElement = document.getElementById("error-message");
+                errorElement.textContent = "Selecione um serviço antes de inserir o email.";
+                return false;
+            }
+            return true;
+        }
+        function updateSelectedService(checkbox) {
+            var servicoId = checkbox.parentNode.parentNode.querySelector(".servico-id").textContent;
+            document.getElementById("servicoId").value = servicoId;
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Serviços Disponíveis</h1>
+    <form action="/selecionar-servico" method="post">
+    <table>
+        <thead>
+        <tr>
+            <th>Título</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Selecionar</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="servico : ${servicosDisponiveis}">
+            <td th:text="${servico.titulo}"></td>
+            <td th:text="${servico.descricao}"></td>
+            <td th:text="${servico.valor}"></td>
+            <td>
+                <label>
+                    <input type="checkbox" name="servicoId" th:value="${servico.id}" onclick="uncheckOtherCheckboxes(this); updateSelectedService(this);">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <h3>Inserir Email do Prestador:</h3>
+                    <input type="email" id="emailInput" name="emailInput" placeholder="Email do Prestador" required>
+                    <button type="submit">Inserir</button>
+                    <p id="error-message" class="error-message"></p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </form>
+</div>
+</body>
+</html>
+

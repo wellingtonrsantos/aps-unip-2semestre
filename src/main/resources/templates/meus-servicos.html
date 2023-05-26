@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Meus Serviços</title>
+  <style>
+    /* Estilos para centralizar o conteúdo */
+    html, body {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Estilos para a caixa centralizada */
+    .container {
+      max-width: 400px;
+      padding: 20px;
+      background-color: #f2f2f2;
+      border-radius: 5px;
+    }
+
+    /* Estilos para o título */
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Estilos para o formulário */
+    form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Estilos para a tabela */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    /* Estilos para os botões */
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Estilos para os checkboxes */
+    input[type="checkbox"] {
+      transform: scale(1.5);
+      margin: 0;
+    }
+  </style>
+  <script>
+    function marcarCheckbox(concluido, servicoId) {
+      var checkbox = document.getElementById("concluido-" + servicoId);
+      checkbox.checked = concluido;
+    }
+  </script>
+</head>
+<body>
+<div class="container">
+  <h1>Meus Serviços</h1>
+
+  <form th:action="@{/meus-servicos}" method="post">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <button type="submit">Mostrar Meus Serviços</button>
+  </form>
+
+  <!-- Aqui você pode exibir os serviços do usuário -->
+  <form th:action="@{/atualizar-servico}" method="post">
+    <table>
+      <thead>
+      <tr>
+        <th>Título</th>
+        <th>Descrição</th>
+        <th>Valor</th>
+        <th>Concluir</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="servico : ${servicos}">
+        <td th:text="${servico.titulo}"></td>
+        <td th:text="${servico.descricao}"></td>
+        <td th:text="${servico.valor}"></td>
+        <td>
+          <input type="hidden" name="servicoId" th:value="${servico.id}">
+          <input type="checkbox" name="concluido"
+                 onchange="atualizarConcluido(this, '${servico.id}')">
+          <script>
+            marcarCheckbox(${servico.concluido}, '${servico.id}');
+          </script>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <button type="submit">Salvar</button>
+  </form>
+</div>
+<script>
+  function atualizarConcluido(checkbox, servicoId) {
+    var hiddenInput = document.getElementById("hidden-" + servicoId);
+    if (checkbox.checked) {
+      hiddenInput.value = "true";
+    } else {
+      hiddenInput.removeAttribute("name");
+    }
+  }
+</script>
+
+</body>
+</html>
